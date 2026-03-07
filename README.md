@@ -230,96 +230,78 @@ Connect shelters with external services and tools.
 
 ---
 
-# Architecture Overview
+# Architecture
 
-Shelter Hub is implemented as a modular monolithic system with clear domain boundaries.
+ShelterHub supports both **online and offline** usage across **mobile and desktop** clients. Business logic is written once in a shared `core` package and reused by all client apps. Platform-specific code is limited to UI and adapter implementations.
 
-The architecture emphasizes:
+## Layers
 
-- multi-tenant support
-- strong data isolation
-- modular domain design
-- asynchronous processing for external integrations
+```
+UI → Application / Use Cases → Domain → Interfaces → Platform Adapters
+```
 
----
-
-# High-Level Architecture
-
-Clients:
-
-- Web Application
-- Mobile Application
-
-Backend:
-
-- NestJS API server
-
-Infrastructure:
-
-- PostgreSQL database
-- object storage for media
-- background workers
-
-External integrations:
-
-- messaging APIs
-- external services
+| Layer | Responsibility |
+|---|---|
+| UI | Platform-specific views (mobile, desktop) |
+| Application / Use Cases | Orchestrates business operations |
+| Domain | Models, rules, validation, sync logic |
+| Interfaces | Repository and service contracts |
+| Platform Adapters | Concrete implementations (local DB, API, storage) |
 
 ---
 
-# Logical System Structure
+## Shared Core
 
-Clients
+The `core` package contains all logic that must behave identically across platforms:
 
-Web Application  
-Mobile Application
+- **Domain models** — entities and value objects (Animal, Adopter, Appointment, etc.)
+- **Business rules** — invariants and domain policies
+- **Use cases** — application services that orchestrate domain operations
+- **Validation** — input and state validation shared across all clients
+- **Sync rules** — conflict detection and resolution policies
+- **Repository interfaces** — abstractions that platform adapters implement
 
-↓
-
-API Layer
-
-NestJS Backend
-
-↓
-
-Core Domain Modules
-
-Animal Module  
-Adopter Module  
-Messaging Module  
-Staff Module  
-Appointments Module  
-Workflow Module
-
-↓
-
-Data Layer
-
-PostgreSQL  
-Object Storage
-
-↓
-
-Async Workers
-
-Outbox Worker  
-Notification Worker  
-Messaging Worker
-
-↓
-
-External Integrations
-
-Messaging APIs  
-External service APIs
+Mobile and desktop apps import `core` directly. No business logic lives in platform-specific code.
 
 ---
 
-# Multi-Tenant Design
+## Platform-Specific Apps
 
-Shelter Hub supports multiple shelters within a single system.
+Each client app contains only what is specific to its platform:
 
-Each shelter acts as a tenant.
+- **Mobile** (`apps/mobile`) — React Native UI, Expo, mobile-native adapters
+- **Desktop** (`apps/desktop`) — Desktop UI, desktop-native adapters
+- **Adapters** — concrete implementations of repository interfaces (SQLite, API client, file storage)
+
+---
+
+## Offline-First
+
+The UI reads exclusively from the **local database** (SQLite). All writes go to local storage first and are reflected in the UI immediately, regardless of network state.
+
+A background sync service reads from a local outbox and pushes changes to the backend. Incoming server changes are written to the local database and the UI updates reactively.
+
+The app remains fully functional without a network connection.
+
+---
+
+## Sync and Conflict Handling
+
+Conflict resolution policies live in `core/sync`:
+
+- Each entity carries a `version` or `updatedAt` timestamp
+- On sync, the client compares local and server versions
+- **Last-write-wins** is the default for most fields
+- **Domain-specific rules** apply to critical state transitions (e.g., adoption status cannot revert once confirmed)
+- Unresolvable conflicts are surfaced to the user for manual resolution
+
+The backend is the **source of truth** for invariants that must never conflict (e.g., an animal cannot be adopted twice).
+
+---
+
+## Multi-Tenant Design
+
+Shelter Hub supports multiple shelters within a single system. Each shelter acts as a tenant.
 
 Tenant isolation is enforced using:
 
@@ -327,39 +309,21 @@ Tenant isolation is enforced using:
 - database-level isolation policies
 - tenant-aware request middleware
 
-Tenant identification can be resolved through:
+Tenant identification is resolved through:
 
-- subdomain routing  
-  `shelterSlug.shelterhub.com`
-
-or
-
-- request headers  
-  `X-Tenant-ID`
+- subdomain routing — `shelterSlug.shelterhub.com`
+- request header — `X-Tenant-ID`
 
 ---
 
-# Event-Driven Processing
+## Design Principles
 
-Certain operations are handled asynchronously.
-
-Examples include:
-
-- sending outbound messages
-- notification delivery
-- reminder generation
-- analytics updates
-
-Shelter Hub uses a transactional outbox pattern to ensure reliable event processing.
-
-Processing flow:
-
-1. a state change is committed in the database
-2. an outbox event is recorded
-3. background workers process the event
-4. external actions are executed
-
-This allows the system to maintain reliability while supporting eventual consistency.
+- **Offline-first** — the local database is the primary data source; the network is secondary
+- **Shared core** — business logic lives once in `core` and is imported by all client apps
+- **Platform adapters** — each app provides its own adapter implementations; `core` never depends on platform APIs
+- **Backend as authority** — critical invariants are enforced server-side
+- **Eventual consistency** — clients sync in the background; the UI reflects local state immediately
+- **No duplication** — adding a business rule means editing `core`, not updating each app separately
 
 ---
 
@@ -372,16 +336,18 @@ This allows the system to maintain reliability while supporting eventual consist
 - Prisma ORM
 - PostgreSQL
 
-## Web Application
+## Web / Desktop Application
 
-- Next.js
+- Next.js / Electron
 - React
 - TypeScript
+- SQLite (local database for offline support)
 
 ## Mobile Application
 
 - React Native
 - Expo
+- SQLite (via expo-sqlite)
 
 ## Infrastructure
 
@@ -397,17 +363,33 @@ This allows the system to maintain reliability while supporting eventual consist
 
 # Repository Structure
 
+```
+core/
+  domain/         # entities, value objects, domain rules
+  use-cases/      # application services
+  validation/     # shared validators
+  sync/           # sync rules and conflict resolution
+  interfaces/     # repository and service contracts
+
 apps/
-api/
-web/
-mobile/
+  mobile/
+    ui/           # React Native screens and components
+    adapters/     # SQLite, API, and storage implementations
+  desktop/
+    ui/           # Desktop UI
+    adapters/     # Platform-specific implementations
+
+backend/
+  modules/        # NestJS domain modules
+  workers/        # Async background workers
+  infra/          # Prisma, PostgreSQL, object storage
 
 packages/
-ui/
-api-client/
-types/
-validators/
-config/
+  api-client/     # Typed HTTP client shared by apps
+  types/          # Shared TypeScript types
+  validators/     # Zod schemas (imported by core)
+  config/         # Shared configuration
+```
 
 ---
 
