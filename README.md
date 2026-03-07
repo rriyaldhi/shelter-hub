@@ -1,232 +1,142 @@
-# Shelter Hub
+# ShelterHub
 
-Shelter Hub is a platform designed to help animal shelters manage their daily operations, communicate with adopters, and coordinate staff and volunteers more effectively.
-
-Many shelters rely on fragmented tools such as spreadsheets, messaging apps, and social media to manage animals and respond to adoption inquiries. Shelter Hub provides a unified system that centralizes these workflows into a single platform.
-
-The goal of Shelter Hub is to simplify shelter operations, improve response times to adopters, and increase successful adoption outcomes.
+ShelterHub is an operational management system for animal shelters, rescue organizations, and foster-based operations. It replaces fragmented tools — spreadsheets, shared inboxes, paper forms — with a single system that tracks animals from intake to outcome and manages the people, workflows, and records around them.
 
 ---
 
-# Product Overview
+# Overview
 
-Shelter Hub provides tools for shelters to manage:
+Shelters deal with a high volume of moving pieces: animals coming in and going out, medical care schedules, foster placements, adoption applications, and a mix of staff, volunteers, partners, and vets. ShelterHub gives shelter teams a shared system to manage all of this without losing track of an animal's history or dropping an adoption application.
 
-- animal records and adoption status
-- adopter inquiries and conversations
-- staff and volunteer coordination
-- adoption visit scheduling
-- operational workflows and reminders
-
-The system is designed to support multiple shelters while keeping each shelter's data isolated.
+The system is multi-tenant. Each shelter operates in its own isolated workspace.
 
 ---
 
-# Core Modules
+# Core Features
 
-## Animal
-
-The Animal module manages the lifecycle of animals in the shelter.
-
-Responsibilities:
-
-- maintain animal profiles
-- manage photos and media
-- track intake information
-- track adoption status
-- manage foster assignments
-- provide public adoption listings
-
-Key features:
-
-- create and update animal profiles
-- upload and manage photos
-- track adoption status
-- manage public adoptable listings
+- Full animal lifecycle tracking — intake through outcome
+- Medical and care records per animal
+- Foster placement and check-in management
+- Adoption application intake, review, and completion
+- People records — adopters, fosters, volunteers, surrendering owners, rescue partners, vets
+- Operational forms — intake, surrender, foster, adoption
+- Audit trail on all records
+- Intake/outcome reporting and operational dashboards
 
 ---
 
-## Adopter
+# Feature Areas by Workflow
 
-The Adopter module represents people interacting with the shelter.
+## Animal Lifecycle
 
-Responsibilities:
+Each animal in the system has a profile that tracks its full history from arrival to outcome.
 
-- maintain adopter contact information
-- track adoption applications
-- maintain interaction history
-- manage messaging consent
-
-Key features:
-
-- adopter profiles
-- adoption history tracking
-- inquiry management
+- **Intake** — record source (stray, surrender, transfer in), intake date, and initial assessment
+- **Profile** — species, breed, age, weight, sex, microchip, photos, and notes
+- **Status tracking** — available, on hold, in foster, pending adoption, adopted, transferred out, deceased
+- **Transfers** — record transfers in from partner rescues and transfers out to other organizations
+- **Outcome tracking** — adoption, return to owner, transfer out, euthanasia, escaped/lost
+- **Timeline** — full chronological history of status changes, medical events, and notes per animal
 
 ---
 
-## Messaging
+## Medical and Care
 
-The Messaging module provides a unified inbox for communication with adopters.
+Medical records are attached to the animal and visible across the team.
 
-Responsibilities:
-
-- manage message threads
-- integrate external messaging channels
-- support message templates
-- track message delivery status
-
-Key features:
-
-- threaded conversations
-- quick reply templates
-- messaging integrations
-- webhook handling for inbound messages
+- **Vaccinations** — record vaccine name, date administered, next due date
+- **Medications** — active and past medications with dosage, frequency, and end date
+- **Treatments** — records for procedures, wound care, and recurring treatments
+- **Vet visits and surgeries** — visit date, clinic, vet, notes, and follow-up actions
+- **Care notes** — general notes from staff or fosters about behavior, diet, or condition
+- **Due tasks and reminders** — upcoming vaccinations, medication refills, and scheduled rechecks
 
 ---
 
-## Staff
+## Foster Management
 
-The Staff module manages users inside a shelter.
-
-Responsibilities:
-
-- manage user accounts
-- manage roles and permissions
-- assign conversations and tasks
-- track staff activity
-
-Key features:
-
-- role-based access control
-- volunteer and staff management
-- activity logs
+- **Foster profiles** — contact info, address, household details, animal preferences, experience
+- **Capacity tracking** — number and type of animals a foster can take; current vs. available capacity
+- **Placements** — link an animal to a foster with placement date, expected duration, and notes
+- **Check-ins** — log periodic check-ins between staff and foster; record status and any concerns
+- **Foster-to-adopt** — flag a placement as a foster-to-adopt and transition directly to an adoption record
 
 ---
 
-## Appointments
+## Adoption Workflow
 
-The Appointments module handles scheduling interactions with adopters and veterinary care.
-
-Responsibilities:
-
-- adoption visits
-- veterinary appointments
-- internal operational scheduling
-
-Key features:
-
-- appointment scheduling
-- staff assignment
-- reminders
+- **Applications** — collect adopter information, household details, and animal preferences via a structured form
+- **Review and screening** — staff review applications, add notes, and move them through a defined pipeline
+- **Pipeline stages** — New → Reviewed → Screening → Meet and Greet → Approved → Pending → Adopted
+- **Holds and reservations** — place a soft hold on an animal for an applicant in the pipeline
+- **Meet and greet** — schedule and record an in-person or virtual meeting between applicant and animal
+- **Adoption completion** — record adoption date, fees, signed documents, and assigned staff
+- **Post-adoption notes** — log follow-up contact after placement (30-day checks, returns, etc.)
 
 ---
 
-## Workflow
+## People and Partner Records
 
-The Workflow module coordinates operational tasks.
-
-Responsibilities:
-
-- manage adoption pipelines
-- track follow-up tasks
-- automate reminders
-
-Example pipeline:
-
-New Inquiry → Contacted → Screening → Visit Scheduled → Pending → Adopted
+- **Adopters** — contact info, application history, adopted animals, notes
+- **Fosters** — full profile with placement history and capacity (see Foster Management)
+- **Volunteers** — contact info, availability, skills, assigned tasks
+- **Surrendering owners** — contact info linked to surrender records and surrendered animals
+- **Rescue partners** — organizations that send or receive transfers; contact and transfer history
+- **Vets and clinics** — clinic name, address, contact, linked to vet visit records
 
 ---
 
-# Feature Roadmap
+## Forms and Operational Admin
 
-## Phase 1 — Core Operations
-
-Initial functionality focuses on core shelter workflows.
-
-Features:
-
-- animal profile management
-- public adoptable listings
-- adopter inquiries
-- unified messaging inbox
-- staff user management
-- workflow pipeline
-- basic appointment scheduling
-
-Goal:
-
-Allow shelters to manage their day-to-day operations using Shelter Hub.
+- **Intake form** — captures animal details, source, condition, and initial assessment at intake
+- **Surrender form** — records owner information, reason for surrender, animal history, and known medical issues
+- **Foster agreement form** — captures household details, preferences, and agreement terms
+- **Adoption application form** — structured form for prospective adopters to submit
+- **Document handling** — attach PDFs and documents to animals, people, or records
+- **Notes** — free-form notes on any entity (animal, person, application)
+- **Audit trail** — all record changes are logged with timestamp and user
 
 ---
 
-## Phase 2 — Communication Platform
+## Reporting and Visibility
 
-Focus on improving communication efficiency.
-
-Features:
-
-- messaging channel integrations
-- message templates
-- automated follow-ups
-- notifications
-- conversation assignment
-- conversation search
-
-Goal:
-
-Reduce response times and prevent missed adopter inquiries.
+- **Intake and outcome report** — count of animals in, out, and by outcome type over a date range
+- **Live inventory** — current count of animals by status and location (shelter vs. foster)
+- **Operational dashboard** — snapshot of open applications, animals due for medical care, and foster capacity
+- **Task and reminder view** — list of overdue and upcoming tasks across all animals
+- **Data export** — export animal records, adoption history, and people records to CSV
+- **Data quality checks** — flag incomplete profiles, missing intake data, or animals with no outcome after a defined period
 
 ---
 
-## Phase 3 — Operational Improvements
+# MVP Scope
 
-Focus on improving operational coordination.
+The MVP covers the workflows that a shelter needs to replace manual tracking entirely.
 
-Features:
-
-- advanced appointment management
-- task management
-- activity tracking
-- improved workflow automation
-
-Goal:
-
-Enable shelters to coordinate staff and volunteers effectively.
-
----
-
-## Phase 4 — Insights and Analytics
-
-Focus on operational insights.
-
-Features:
-
-- adoption funnel analytics
-- response time metrics
-- operational dashboards
-- workflow performance tracking
-
-Goal:
-
-Provide shelters with insights to improve adoption outcomes.
+| Area | MVP |
+|---|---|
+| Animal lifecycle | Intake, profile, status changes, outcome, timeline |
+| Medical records | Vaccinations, medications, vet visits, care notes |
+| Foster management | Foster profiles, placements, check-ins |
+| Adoption workflow | Applications, pipeline stages, holds, completion |
+| People records | Adopters, fosters, volunteers, surrendering owners |
+| Forms | Intake, surrender, foster agreement, adoption application |
+| Admin | Audit trail, notes, document attachments |
+| Reporting | Intake/outcome counts, live inventory, task view, CSV export |
 
 ---
 
-## Phase 5 — Integrations
+# Future Enhancements
 
-Expand the ecosystem around shelters.
+These are not in scope for the MVP but are part of the planned product direction.
 
-Features:
-
-- external adoption platform integrations
-- donation system integrations
-- veterinary system integrations
-- shelter collaboration tools
-
-Goal:
-
-Connect shelters with external services and tools.
+- **Public adoptable listings** — a shelter-branded page showing available animals, integrated with the animal database
+- **Social posting support** — draft and publish adoption posts from an animal's profile
+- **Third-party platform integrations** — sync with Petfinder, Adopt-a-Pet, or similar platforms
+- **Notifications** — email or push notifications for task reminders, application updates, and check-in schedules
+- **Analytics** — adoption funnel metrics, length-of-stay analysis, foster utilization rates
+- **Donation tracking** — link donations to animals or campaigns
+- **Veterinary system integrations** — read vet records directly from clinic systems
 
 ---
 
