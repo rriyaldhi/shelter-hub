@@ -271,6 +271,87 @@ Tenant identification is resolved through:
 
 ---
 
+# MVP Self-Hosted Deployment
+
+Shelter Hub's MVP deployment is intentionally practical. The application runs on a self-hosted Mac mini M1 that hosts a local single-node Kubernetes cluster. This keeps the stack close to the long-term architecture while staying realistic for an early-stage product and a small operational footprint.
+
+## Deployment Model
+
+- The Mac mini hosts a lightweight local Kubernetes cluster
+- Argo CD runs inside the cluster and pulls desired state from Git
+- GitHub Actions handles CI: tests, builds, and image publishing
+- Terraform is used for bootstrap and provisioning work
+- GHCR, or another container registry, stores the built container images
+
+This setup follows GitOps principles. GitHub Actions does not deploy directly to the cluster in the normal path. Instead, Git is the source of truth for what should be running.
+
+## End-to-End Flow
+
+1. A developer pushes code to GitHub.
+2. GitHub Actions runs tests and builds a container image.
+3. The image is pushed to GHCR.
+4. GitHub Actions updates GitOps manifests or Helm values in Git with the new image tag.
+5. Argo CD detects the Git change and syncs it to the local Kubernetes cluster.
+6. Kubernetes pulls the image from the registry and starts or updates the pods.
+
+This keeps CI and deployment responsibilities separate: GitHub Actions produces artifacts, while Argo CD reconciles the cluster to the desired state stored in Git.
+
+## GitHub Actions and Argo CD
+
+For the normal MVP flow, GitHub Actions does not need direct network access to the local Argo CD instance or to the Kubernetes cluster running on the Mac mini.
+
+They are connected indirectly through Git:
+
+- GitHub Actions updates the GitOps repository
+- Argo CD pulls from that repository
+- Argo CD applies the updated manifests to Kubernetes
+
+Direct webhook or API-based triggering can be added later, but it is optional and not required for the MVP.
+
+## Terraform's Role
+
+Terraform is used mainly for provisioning and bootstrap tasks, not for routine application deployments. In practice, that means using Terraform for cluster setup, base infrastructure, and initial platform configuration, while application releases continue through the GitOps flow.
+
+For a local Mac mini deployment, Terraform should usually be run:
+
+- locally on the Mac mini itself, or
+- from a self-hosted GitHub Actions runner on that machine
+
+That avoids exposing the local cluster publicly just to allow provisioning access.
+
+## Container Images
+
+Container images are stored in GHCR or another registry.
+
+- The registry stores the built Docker images
+- The GitOps repository stores only image references and tags
+- Kubernetes pulls the referenced image from the registry during deployment
+
+The Git repository stores the desired version to run, not the image binaries themselves.
+
+## Practical Infrastructure Stack
+
+- Kubernetes: k3s or another lightweight single-node Kubernetes distribution
+- CD: Argo CD
+- CI: GitHub Actions
+- IaC: Terraform
+- Registry: GHCR
+- Ingress / TLS: ingress controller plus TLS configuration
+- Backups: database and media backups stored off-machine
+
+## Tradeoffs and Limitations
+
+This is a good fit for an MVP, low traffic, and early users, but it is not the final production architecture.
+
+- The Mac mini is a single point of failure
+- Power, internet, disk, or hardware issues directly affect availability
+- Capacity is limited to one local machine
+- Operational resilience is lower than a multi-node or cloud-hosted deployment
+
+It should be treated as a pragmatic MVP deployment model: simple, cost-effective, and close to the intended platform shape, but with clear reliability limits.
+
+---
+
 # Repository Structure
 
 ```
