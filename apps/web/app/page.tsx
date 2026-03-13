@@ -63,8 +63,9 @@ function Hero({ onJoin }: { onJoin: () => void }) {
         <span style={{ color: C.brandLt }}>one unified platform</span>
       </h1>
       <p style={{ fontSize: "1.15rem", color: C.muted, maxWidth: 560, margin: "0 auto 2.5rem" }}>
-        Shelter Hub replaces the scattered spreadsheets, messaging apps, and social media your
-        team uses every day — with a single system built for how shelters actually work.
+        Shelter Hub replaces fragmented spreadsheets, and paper forms — with a
+        single system that tracks animals from intake to outcome and manages the people and
+        workflows around them.
       </p>
       <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
         <button onClick={onJoin} style={{
@@ -131,17 +132,17 @@ function SectionHeader({ label, title, sub }: { label: string; title: React.Reac
 
 function Problem() {
   const cards = [
-    { icon: "📋", title: "Spreadsheet chaos",  body: "Animal records, adoption status, and volunteer schedules scattered across dozens of sheets with no single source of truth." },
-    { icon: "💬", title: "Missed inquiries",   body: "Adopter messages arrive via email, Facebook, Instagram, and text — and fall through the cracks between staff shifts." },
-    { icon: "📅", title: "Scheduling friction", body: "Adoption visits, vet appointments, and volunteer shifts managed through back-and-forth messages with no shared calendar." },
-    { icon: "👥", title: "Coordination gaps",  body: "Volunteers and staff lack visibility into what needs doing, leading to duplicated effort and things falling through the cracks." },
+    { icon: "📋", title: "Spreadsheet chaos",       body: "Animal records, adoption status, and medical history scattered across dozens of sheets with no single source of truth." },
+    { icon: "🩺", title: "Lost medical records",     body: "Vaccination schedules, medications, and vet visit notes live in separate files — and get lost when a foster or staff member leaves." },
+    { icon: "🏡", title: "Foster coordination gaps", body: "Foster placements, capacity, and check-ins tracked manually via text and email, with no visibility across the team." },
+    { icon: "📂", title: "No audit trail",           body: "No record of who changed an animal's status, approved an adoption, or updated a medical record — accountability is impossible." },
   ];
   return (
     <section style={{ padding: "5rem 2rem", background: "#f3f4f2" }}>
       <SectionHeader
         label="The problem"
         title="Shelters are drowning in fragmented tools"
-        sub="Most shelters patch together disconnected tools that create delays, missed messages, and coordination gaps."
+        sub="Most shelters patch together spreadsheets, paper forms, and shared inboxes that create gaps, missing records, and no accountability."
       />
       <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.25rem" }}>
         {cards.map((c) => (
@@ -160,12 +161,12 @@ function Problem() {
 
 function Features() {
   const cards = [
-    { icon: "🐾", title: "Animal Management",       body: "Create and update animal profiles, track intake and adoption status, manage photos, foster assignments, and public adoptable listings." },
-    { icon: "👥", title: "Adopter Profiles",         body: "Maintain adopter contact information, track application history, manage inquiry pipelines, and keep a full interaction timeline." },
-    { icon: "📨", title: "Unified Messaging",        body: "One inbox for all adopter conversations — regardless of channel. Threaded discussions, quick reply templates, and delivery tracking." },
-    { icon: "🔒", title: "Staff & Volunteer Mgmt",   body: "Role-based access control, conversation and task assignment, activity logs, and full volunteer lifecycle management." },
-    { icon: "📅", title: "Appointment Scheduling",   body: "Schedule adoption visits, vet appointments, and internal tasks. Assign staff, set reminders, and keep everyone on the same page." },
-    { icon: "🔄", title: "Adoption Workflow",        body: "Manage adoption pipelines from first inquiry to final adoption. Automate follow-ups and track every step of the process." },
+    { icon: "🐾", title: "Animal Lifecycle",         body: "Track every animal from intake through outcome — profile, status changes, transfers, and a full chronological timeline of every event." },
+    { icon: "🩺", title: "Medical & Care Records",   body: "Vaccinations, medications, vet visits, and care notes attached to each animal, visible across your team with upcoming-task reminders." },
+    { icon: "🏡", title: "Foster Management",        body: "Foster profiles with capacity tracking, placement records with check-ins, and direct transition from foster placement to adoption." },
+    { icon: "🔄", title: "Adoption Workflow",        body: "Applications, pipeline stages (New → Approved → Adopted), holds, meet-and-greet scheduling, and post-adoption follow-up notes." },
+    { icon: "👥", title: "People & Partner Records", body: "Centralized records for adopters, fosters, volunteers, surrendering owners, rescue partners, and vets — all linked to relevant animals." },
+    { icon: "📊", title: "Reporting & Dashboards",   body: "Intake and outcome counts, live inventory by status and location, overdue task views, and CSV export for any record set." },
   ];
   return (
     <section id="features" style={{ padding: "5rem 2rem" }}>
@@ -193,17 +194,17 @@ function Features() {
 
 function HowItWorks() {
   const steps = [
-    { title: "Adopter submits an inquiry",         body: "Whether it arrives via your website, email, or a messaging platform, every inquiry lands in the same unified inbox automatically." },
-    { title: "Staff picks up the conversation",    body: "Conversations are assigned to the right staff member. Templates speed up responses. Nothing gets missed between shifts." },
-    { title: "Application moves through pipeline", body: "The adopter progresses from Inquiry → Screening → Visit Scheduled → Pending → Adopted, with reminders at every stage." },
-    { title: "Adoption is completed",              body: "Animal status is updated, records are finalized, and the shelter has full visibility into every successful outcome." },
+    { title: "Animal arrives — intake recorded immediately",  body: "Log the source (stray, surrender, transfer), intake date, and initial assessment. The animal's profile and timeline start here." },
+    { title: "Medical care tracked from day one",             body: "Vaccinations, medications, and vet visits are attached to the animal record. Upcoming tasks surface automatically so nothing gets missed." },
+    { title: "Foster placed or adoption application received", body: "Place the animal with a foster and track check-ins, or receive an adoption application and move it through the review pipeline." },
+    { title: "Outcome recorded, records finalized",           body: "Whether adopted, transferred, or returned to owner, the outcome is logged with full history — giving you complete visibility into every animal." },
   ];
   return (
     <section style={{ padding: "5rem 2rem", background: "#f3f4f2" }}>
       <SectionHeader
         label="How it works"
-        title="From inquiry to adoption — all in one system"
-        sub="Shelter Hub guides every interaction through a clear, trackable process."
+        title="From intake to outcome — all in one system"
+        sub="Shelter Hub tracks every animal through a clear, auditable process."
       />
       <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column" }}>
         {steps.map((s, i) => (
