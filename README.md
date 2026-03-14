@@ -384,6 +384,27 @@ packages/
 
 ---
 
+## Backend Module Boundaries
+
+Backend modules are organized by **business capability / workflow**, not by database entity or technical layer.
+
+A module should own a cohesive area of responsibility, its business rules, use cases, persistence logic, and API surface.
+
+Examples of valid backend modules:
+
+- `animal-management` — intake, profile updates, status changes, outcome tracking
+- `medical-care` — vaccinations, medications, treatments, vet visits
+- `foster-management` — foster profiles, placements, check-ins
+- `adoption-management` — applications, screening, holds, approval, completion
+- `scheduling` — meet-and-greet appointments and availability
+- `people-records` — adopters, fosters, volunteers, partners, vets
+- `reporting` — dashboards, exports, operational metrics
+
+This means modules are **not** created simply because an entity exists.  
+For example, `animal-management` is a valid module not because `Animal` is an entity, but because animal lifecycle management is a core shelter workflow.
+
+---
+
 # Long-Term Vision
 
 Shelter Hub aims to become a comprehensive platform for animal shelters, enabling them to manage operations efficiently, communicate effectively with adopters, and improve adoption outcomes.
