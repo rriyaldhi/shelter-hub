@@ -370,10 +370,10 @@ apps/
     ui/           # Desktop UI
     adapters/     # Platform-specific implementations
 
-backend/
-  modules/        # NestJS domain modules
-  workers/        # Async background workers
-  infra/          # Prisma, PostgreSQL, object storage
+  backend/
+    modules/      # NestJS domain modules
+    workers/      # Async background workers
+    infra/        # Prisma, PostgreSQL, object storage
 
 packages/
   api-client/     # Typed HTTP client shared by apps
