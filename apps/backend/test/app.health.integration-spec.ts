@@ -3,8 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
 import {
   GenericContainer,
-  StartedTestContainer,
-  Wait
+  StartedTestContainer
 } from "testcontainers";
 import { AppModule } from "../src/app.module";
 
@@ -23,9 +22,6 @@ describe("Health", () => {
         POSTGRES_DB: "shelterhub_test"
       })
       .withExposedPorts(5432)
-      .withWaitStrategy(
-        Wait.forLogMessage("database system is ready to accept connections")
-      )
       .start();
 
     process.env.DATABASE_URL = `postgresql://postgres:postgres@${dbContainer.getHost()}:${dbContainer.getMappedPort(5432)}/shelterhub_test?schema=public`;
@@ -63,6 +59,19 @@ describe("Health", () => {
       status: "ok",
       service: "shelter-hub-backend",
       database: "up"
+    });
+  });
+
+  it("should return database down response for GET /api/health when database is disconnected", async () => {
+    await dbContainer.stop();
+
+    const response = await request(app.getHttpServer()).get("/api/health");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      status: "ok",
+      service: "shelter-hub-backend",
+      database: "down"
     });
   });
 });

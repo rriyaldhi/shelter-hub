@@ -9,7 +9,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async isHealthy(): Promise<boolean> {
     try {
-      await this.$connect();
+      await this.$queryRaw`SELECT 1`;
       return true;
     } catch {
       return false;
