@@ -1,6 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { PrismaService } from "./prisma/prisma.service";
 
 function getAllowedCorsOrigins(): string[] {
   const configuredOrigins = process.env.CORS_ORIGINS;
@@ -16,6 +17,8 @@ function getAllowedCorsOrigins(): string[] {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
   app.setGlobalPrefix("api");
   app.useGlobalPipes(
     new ValidationPipe({
