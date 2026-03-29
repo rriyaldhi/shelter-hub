@@ -8,7 +8,7 @@ ShelterHub is an operational management system for animal shelters, rescue organ
 
 Shelters deal with a high volume of moving pieces: animals coming in and going out, medical care schedules, foster placements, adoption applications, and a mix of staff, volunteers, partners, and vets. ShelterHub gives shelter teams a shared system to manage all of this without losing track of an animal's history or dropping an adoption application.
 
-The system is multi-tenant. Each shelter operates in its own isolated workspace.
+The system is multi-shelter. Each shelter operates in its own isolated workspace.
 
 ---
 
@@ -209,20 +209,20 @@ The backend is the **source of truth** for invariants that must never conflict (
 
 ---
 
-## Multi-Tenant Design
+## Shelter Isolation Design
 
-Shelter Hub supports multiple shelters within a single system. Each shelter acts as a tenant.
+Shelter Hub supports multiple shelters within a single system. Each shelter operates as its own isolated workspace.
 
-Tenant isolation is enforced using:
+Shelter isolation is enforced using:
 
-- `tenant_id` on all domain entities
+- `shelter_id` on all shelter-scoped domain entities
 - database-level isolation policies
-- tenant-aware request middleware
+- shelter-aware request middleware
 
-Tenant identification is resolved through:
+Shelter identification is resolved through:
 
 - subdomain routing — `shelterSlug.shelterhub.com`
-- request header — `X-Tenant-ID`
+- request header — `X-Shelter-ID`
 
 ---
 
@@ -392,16 +392,20 @@ A module should own a cohesive area of responsibility, its business rules, use c
 
 Examples of valid backend modules:
 
-- `animal-management` — intake, profile updates, status changes, outcome tracking
-- `medical-care` — vaccinations, medications, treatments, vet visits
-- `foster-management` — foster profiles, placements, check-ins
-- `adoption-management` — applications, screening, holds, approval, completion
+- `shelter` — shelter registration, onboarding, profile/settings, workspace lifecycle
+- `auth` — credential handling, login, password reset, session/token issuance
+- `user` — user accounts and identity data
+- `membership` — shelter staff membership, roles, invitations, ownership/admin assignment
+- `animal` — intake, profile updates, status changes, outcome tracking
+- `medical` — vaccinations, medications, treatments, vet visits
+- `foster` — foster profiles, placements, check-ins
+- `adoption` — applications, screening, holds, approval, completion
 - `scheduling` — meet-and-greet appointments and availability
-- `people-records` — adopters, fosters, volunteers, partners, vets
+- `people` — adopters, fosters, volunteers, partners, vets
 - `reporting` — dashboards, exports, operational metrics
 
 This means modules are **not** created simply because an entity exists.  
-For example, `animal-management` is a valid module not because `Animal` is an entity, but because animal lifecycle management is a core shelter workflow.
+For example, `animal` is a valid module not because `Animal` is an entity, but because animal lifecycle management is a core shelter workflow.
 
 ---
 
