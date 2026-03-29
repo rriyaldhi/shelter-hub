@@ -144,6 +144,12 @@ These are not in scope for the MVP but are part of the planned product direction
 
 ShelterHub supports both **online and offline** usage across **mobile and desktop** clients. Business logic is written once in a shared `core` package and reused by all client apps. Platform-specific code is limited to UI and adapter implementations.
 
+Current implementation snapshot (March 2026): the repository currently contains
+`apps/web` and a NestJS `apps/backend` service. The backend is refactored with
+shared `platform` templates (`bootstrap`, `prisma`, `health`) so additional
+deployable services can be added in-repo for Kubernetes without duplicating
+infrastructure wiring.
+
 ## Layers
 
 ```
@@ -355,32 +361,28 @@ It should be treated as a pragmatic MVP deployment model: simple, cost-effective
 # Repository Structure
 
 ```
-core/
-  domain/         # entities, value objects, domain rules
-  use-cases/      # application services
-  validation/     # shared validators
-  sync/           # sync rules and conflict resolution
-  interfaces/     # repository and service contracts
-
 apps/
-  mobile/
-    ui/           # React Native screens and components
-    adapters/     # SQLite, API, and storage implementations
-  desktop/
-    ui/           # Desktop UI
-    adapters/     # Platform-specific implementations
-
+  web/            # Next.js web app
   backend/
-    modules/      # NestJS domain modules
-    workers/      # Async background workers
-    infra/        # Prisma, PostgreSQL, object storage
-
-packages/
-  api-client/     # Typed HTTP client shared by apps
-  types/          # Shared TypeScript types
-  validators/     # Zod schemas (imported by core)
-  config/         # Shared configuration
+    src/
+      main.ts                     # HTTP entrypoint
+      app.module.ts               # Service composition root
+      platform/
+        bootstrap/                # Shared HTTP bootstrap template
+        prisma/                   # Shared Prisma integration
+        health/                   # Shared health API template
+    prisma/
+      schema.prisma               # Database schema
+    test/
+      app.health.integration-spec.ts
+scripts/
+  dev.sh          # Run web in dev mode
+  dev-backend.sh  # Run backend in dev mode
 ```
+
+The backend is now structured so each deployable service can reuse the same
+`platform` primitives while staying in a single repository for Kubernetes
+deployment workflows.
 
 ---
 
