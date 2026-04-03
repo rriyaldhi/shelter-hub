@@ -16,6 +16,8 @@ function getAllowedCorsOrigins(): string[] {
 
 export async function createHttpService(rootModule: Type<unknown>): Promise<void> {
   const app = await NestFactory.create(rootModule);
+  app.enableShutdownHooks();
+
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 

@@ -67,23 +67,77 @@ describe("Platform Health", () => {
     const response = await request(app.getHttpServer()).get("/api/health");
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       status: "ok",
       service: "platform-health-test",
-      database: "up"
+      info: {
+        database: {
+          status: "up"
+        }
+      },
+      error: {},
+      details: {
+        database: {
+          status: "up"
+        }
+      }
     });
   });
 
-  it("should return database down response for GET /api/health when database is disconnected", async () => {
-    await dbContainer.stop();
+  it("should return healthy response for GET /api/health/ready", async () => {
+    const response = await request(app.getHttpServer()).get("/api/health/ready");
 
-    const response = await request(app.getHttpServer()).get("/api/health");
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      status: "ok",
+      service: "platform-health-test",
+      info: {
+        database: {
+          status: "up"
+        }
+      }
+    });
+  });
+
+  it("should return liveness response for GET /api/health/live", async () => {
+    const response = await request(app.getHttpServer()).get("/api/health/live");
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       status: "ok",
+      service: "platform-health-test"
+    });
+  });
+
+  it("should return readiness failure for GET /api/health when database is disconnected", async () => {
+    await dbContainer.stop();
+
+    const response = await request(app.getHttpServer()).get("/api/health");
+
+    expect(response.status).toBe(503);
+    expect(response.body).toMatchObject({
+      status: "error",
       service: "platform-health-test",
-      database: "down"
+      error: {
+        database: {
+          status: "down"
+        }
+      },
+      details: {
+        database: {
+          status: "down"
+        }
+      }
+    });
+  });
+
+  it("should keep GET /api/health/live healthy when database is disconnected", async () => {
+    const response = await request(app.getHttpServer()).get("/api/health/live");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      status: "ok",
+      service: "platform-health-test"
     });
   });
 });
